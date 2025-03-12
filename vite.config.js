@@ -7,4 +7,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    watch: {
+      ignored: ['**/output/**'], // Ignore the output directory and its contents
+    },
+  },
 }) 
