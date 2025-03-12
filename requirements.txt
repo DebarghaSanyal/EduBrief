@@ -1,0 +1,9 @@
+yt-dlp
+assemblyai
+nltk
+google-generativeai
+python-dotenv
+requests
+pydub 
+gTTS
+axios
