@@ -136,7 +136,7 @@ def refine_summary_with_gemini(summary, topics):
 
     prompt = f"""
     The following is a rough summary of a video. Please improve it to make it more structured, informative, and engaging while keeping it concise.
-
+    Don't use any markdown just make a summary based conclusion in short upto 250 words based on the size of the Rough summary.
     **Topics Covered:** {topics}
 
     **Rough Summary:** {summary}
@@ -293,7 +293,7 @@ def process_video_url(url):
   
 
     transcript = transcribe_video(url)
-    
+    print("Transcription done")
     # Ensure 'transcript' is a string and actually starts with 'Error'
     if isinstance(transcript, str) and transcript.startswith("Download Error:"):
         op = {
@@ -310,9 +310,9 @@ def process_video_url(url):
     # rough result is a dictionary with key_points and summary as keys
     
     refined_summary = refine_summary_with_gemini(rough_result["summary"], rough_result["key_points"]) # Refines the summary using Gemini AI model flask - 1.5
-    
+    print("Summary refined")
     notes = short_notes(refined_summary, rough_result["key_points"]) # Generates notes based on the refined summary & key points
-
+    print("Notes generated")
     # video_title = get_video_title(url) # Extracts the video title from the URL
     # if video_title:
     #     filename = f"{video_title}.docx"
@@ -323,6 +323,7 @@ def process_video_url(url):
     notes_file = save_notes_as_docx(notes,filename) # Saves the notes as a docx file
 
     audio=text_to_audio(refined_summary) # Converts the refined_summary to an audio file
+    print("Audio generated")
     # Export the audio to a mp3 file
     audio_filepath = os.path.join(OUTPUT_DIR, 'Summary.mp3')
     audio.export(audio_filepath, format='mp3')
