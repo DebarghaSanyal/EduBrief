@@ -46,7 +46,7 @@ aai.settings.api_key = ASSEMBLYAI_API_KEY
 genai.configure(api_key=GOOGLE_API_KEY)
 # model = genai.GenerativeModel("gemini-1.5-flash")   # gentai model name (Must be free version)
 
-
+import subprocess
 # Transcribe video using AssemblyAI and save to result (entry point 2)
 def transcribe_video(url):
     transcriber = aai.Transcriber()  
@@ -54,17 +54,17 @@ def transcribe_video(url):
     audio_file = os.path.join(TEMP_DIR, "audio.mp3") 
 
     if os.environ.get("RENDER", "0") == "1":
-    # On Render or production, use system ffmpeg
+        # On Render or production, use system ffmpeg
         ffmpeg_path = "ffmpeg"
     else:
-    # On local Windows machine, use your local ffmpeg path
+        # On local Windows machine, use your local ffmpeg path
         ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"
 
     # ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"  # Path to ffmpeg in local machine
     if not ffmpeg_path:
         return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."
     
-
+    print(subprocess.getoutput("ffmpeg -version"))
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(TEMP_DIR, "audio"),  # No extension
