@@ -54,8 +54,7 @@ def transcribe_video(url):
     audio_file = os.path.join(TEMP_DIR, "audio.mp3") 
 
     if os.environ.get("RENDER", "0") == "1":
-        # On Render or production, use system ffmpeg
-        ffmpeg_path = "ffmpeg"
+        ffmpeg_path = shutil.which("ffmpeg") or "/usr/bin/ffmpeg"
     else:
         # On local Windows machine, use your local ffmpeg path
         ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"
