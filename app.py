@@ -53,8 +53,14 @@ def transcribe_video(url):
     # temp_dir = tempfile.mkdtemp()  
     audio_file = os.path.join(TEMP_DIR, "audio.mp3") 
 
+    if os.environ.get("RENDER", "0") == "1":
+    # On Render or production, use system ffmpeg
+        ffmpeg_path = "ffmpeg"
+    else:
+    # On local Windows machine, use your local ffmpeg path
+        ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"
 
-    ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"  # Path to ffmpeg in local machine
+    # ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"  # Path to ffmpeg in local machine
     if not ffmpeg_path:
         return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."
     
