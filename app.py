@@ -66,10 +66,15 @@ def transcribe_video(url):
 
     abc_file = "index.txt"
     abc = os.getenv("ABCYT", "").replace("\\n", "\n")
-    # Write cookies into a temp file only if present
+    # Write into Netscape-format file only if abc has content
     if abc.strip():
         with open(abc_file, "w", encoding="utf-8") as f:
-            f.write(abc)
+            f.write("# Netscape HTTP Cookie File\n")
+            for item in abc.split("; "):
+                if "=" in item:
+                    name, value = item.split("=", 1)
+                    f.write(f".youtube.com\tTRUE\t/\tFALSE\t0\t{name}\t{value}\n")
+                    
     # print(subprocess.getoutput("ffmpeg -version"))
     ydl_opts = {
         'format': 'bestaudio/best',
