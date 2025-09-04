@@ -18,6 +18,7 @@ from gtts import gTTS
 from pydub import AudioSegment
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from flask import send_from_directory
 
 app = Flask(__name__)
 CORS(app)
@@ -360,5 +361,14 @@ def process_url():
     result = process_video_url(url)
     return jsonify({"file_path": f"output/{os.path.basename(result)}"})
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    build_dir = os.path.join(os.path.dirname(__file__), 'dist')  # Use 'build' if CRA
+    if path != "" and os.path.exists(os.path.join(build_dir, path)):
+        return send_from_directory(build_dir, path)
+    else:
+        return send_from_directory(build_dir, 'index.html')
+    
 if __name__ == '__main__':
     app.run(debug=True)

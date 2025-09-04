@@ -12,3 +12,4 @@ react-icons
 flask
 flask-cors
 logging
+gunicorn
