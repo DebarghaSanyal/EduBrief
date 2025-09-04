@@ -63,12 +63,20 @@ def transcribe_video(url):
     if not ffmpeg_path:
         return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."
     
-    print(subprocess.getoutput("ffmpeg -version"))
+
+    abc_file = "index.txt"
+    abc = os.getenv("ABCYT", "").replace("\\n", "\n")
+    # Write cookies into a temp file only if present
+    if abc.strip():
+        with open(abc_file, "w", encoding="utf-8") as f:
+            f.write(abc)
+    # print(subprocess.getoutput("ffmpeg -version"))
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(TEMP_DIR, "audio"),  # No extension
         'quiet': True,
         'ffmpeg_location': ffmpeg_path,
+        'cookiefile': abc_file if abc else None,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',        # set format to mp3
@@ -79,6 +87,12 @@ def transcribe_video(url):
             ydl.download([url])                 #Downloades the audio in mp3 format
     except yt_dlp.DownloadError as e:
         return f"Download Error: {str(e)}"
+    finally:        
+        if os.path.exists(abc_file):
+            try:
+                os.remove(abc_file)
+            except Exception:
+                pass
 
     if not os.path.exists(audio_file):
         return f"File Error: {audio_file} was not created."
