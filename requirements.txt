@@ -6,10 +6,7 @@ python-dotenv
 requests
 pydub 
 gTTS
-axios
 python-docx
-react-icons
 flask
 flask-cors
-logging
 gunicorn
