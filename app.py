@@ -61,28 +61,20 @@ def transcribe_video(url):
 
     # ffmpeg_path = "C:\\ffmpeg\\ffmpeg.exe"  # Path to ffmpeg in local machine
     if not ffmpeg_path:
-        return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."
-    
-
-    abc_file = "index.txt"
-    abc = os.getenv("ABCYT", "").replace("\\n", "\n")
-
-    # Write into Netscape-format file only if abc has content
-    if abc.strip():
-        with open(abc_file, "w", encoding="utf-8") as f:
-            f.write("# Netscape HTTP Cookie File\n")
-            for item in abc.split("; "):
-                if "=" in item:
-                    name, value = item.split("=", 1)
-                    f.write(f".youtube.com\tTRUE\t/\tFALSE\t0\t{name}\t{value}\n")
+        return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."    
 
     # yt-dlp options
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(TEMP_DIR, "audio"),  # No extension
         'quiet': True,
-        'ffmpeg_location': ffmpeg_path,
-        'cookiefile': abc_file if abc.strip() else None,
+        'ffmpeg_location': ffmpeg_path,   
+        'extract_flat': False,              # avoid extra requests
+        'http_headers': {                   # emulate a real browser
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                        '(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+        },     
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -93,12 +85,6 @@ def transcribe_video(url):
             ydl.download([url])                 #Downloades the audio in mp3 format
     except yt_dlp.DownloadError as e:
         return f"Download Error: {str(e)}"
-    finally:        
-        if os.path.exists(abc_file):
-            try:
-                os.remove(abc_file)
-            except Exception:
-                pass
 
     if not os.path.exists(audio_file):
         return f"File Error: {audio_file} was not created."
