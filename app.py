@@ -63,18 +63,14 @@ def transcribe_video(url):
     if not ffmpeg_path:
         return "Error: ffmpeg not found in PATH. Please install it or specify the path manually."    
 
+    abc_file = "/etc/secrets/cookies.txt"
     # yt-dlp options
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(TEMP_DIR, "audio"),  # No extension
         'quiet': True,
-        'ffmpeg_location': ffmpeg_path,   
-        'extract_flat': False,              # avoid extra requests
-        'http_headers': {                   # emulate a real browser
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                        '(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
-            'Accept-Language': 'en-US,en;q=0.9',
-        },     
+        'ffmpeg_location': ffmpeg_path,    
+        'cookiefile': abc_file,         
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
