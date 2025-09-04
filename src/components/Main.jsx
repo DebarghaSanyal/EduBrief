@@ -41,12 +41,27 @@ const Main = () => {
 
     // Asynchronously fetch backend data
     try {
-      const response = await axios.post('http://localhost:5000/process_url', { url });
+      // const response = await axios.post('http://localhost:5000/process_url', { url });
+      // const filePath = response.data.file_path;
+      // console.log('File path received:', filePath);
+
+      // const fileUrl = `http://localhost:5000/${filePath}`;
+      // console.log('Fetching from:', fileUrl);
+      let apiBaseUrl;
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        apiBaseUrl = "http://localhost:5000";
+      } else {
+        apiBaseUrl = ""; // Use relative path for production
+      }
+
+      const response = await axios.post(`${apiBaseUrl}/process_url`, { url });
       const filePath = response.data.file_path;
       console.log('File path received:', filePath);
 
-      const fileUrl = `http://localhost:5000/${filePath}`;
-      console.log('Fetching from:', fileUrl);
+      const fileUrl = `${apiBaseUrl}/${filePath}`;
 
       const jsonResponse = await axios.get(fileUrl);
       const data = jsonResponse.data;
@@ -166,14 +181,16 @@ const Main = () => {
           </div>
 
 
-          {/* Audio Insights */}
+          {/* Audio Insights */
+            // src="http://localhost:5000/output/Summary.mp3"
+          }
           <h3 className="text-lg font-semibold text-gray-800">Audio Insights:</h3>
           <p className="text-gray-600 text-sm mb-4">Key insights from the video's audio are summarized below</p>
           {audioAvailable ? (
             <audio
               controls
-              className="w-full my-2 mt-8"
-              src="http://localhost:5000/output/Summary.mp3"
+              className="w-full my-2 mt-8"              
+              src={`${apiBaseUrl}/output/Summary.mp3`}
             >
               Your browser does not support the audio element.
             </audio>
@@ -185,9 +202,11 @@ const Main = () => {
             </div>
           )}
 
-          {/* Notes Section */}
+          {/* Notes Section */
+            // "http://localhost:5000/output/notes.docx"
+          }
 
-          <a href="http://localhost:5000/output/notes.docx"
+          <a href={`${apiBaseUrl}/output/notes.docx`}
             download="notes.docx"
             className="text-blue-500">
             <h3 className="text-gray-800 text-lg font-semibold mt-8">Download short notes based on the video:</h3>
