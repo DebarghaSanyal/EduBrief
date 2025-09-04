@@ -12,6 +12,16 @@ const Main = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [audioAvailable, setAudioAvailable] = useState(false); // Added for Summary.mp3
 
+  let apiBaseUrl;
+  if (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  ) {
+    apiBaseUrl = "http://localhost:5000";
+  } else {
+    apiBaseUrl = ""; // Use relative path for production
+  }
+  
   const handleImportUrl = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -46,16 +56,7 @@ const Main = () => {
       // console.log('File path received:', filePath);
 
       // const fileUrl = `http://localhost:5000/${filePath}`;
-      // console.log('Fetching from:', fileUrl);
-      let apiBaseUrl;
-      if (
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1"
-      ) {
-        apiBaseUrl = "http://localhost:5000";
-      } else {
-        apiBaseUrl = ""; // Use relative path for production
-      }
+      // console.log('Fetching from:', fileUrl);      
 
       const response = await axios.post(`${apiBaseUrl}/process_url`, { url });
       const filePath = response.data.file_path;
